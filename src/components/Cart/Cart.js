@@ -5,27 +5,39 @@ import CartContext from "../../store/cart-context";
 
 const Cart = (props) => {
   const cartCtx = useContext(CartContext);
-  //const mySet=new Set()
-  // cartCtx.items.forEach(element => {
-    
-  // });
+  cartCtx.totalAmount = cartCtx.items
+    .reduce((total, item) => {
+      return total + Number(item.price) * Number(item.quantity);
+    }, 0)
+    .toFixed(2);
+
+  const reduceHandler = (e) => {
+    const ID = e.target.parentElement.parentElement.id;
+    cartCtx.removeItem(ID);
+  };
+  const increaseHandler = (e) => {
+    const ID = e.target.parentElement.parentElement.id;
+    const index = cartCtx.items.findIndex((element) => element.id === ID);
+    const targetItem = {...cartCtx.items[index]}
+    targetItem.quantity=1;
+    cartCtx.addItem(targetItem);
+  };
+
   const cartItems = (
     <ul className={classes["cart-items"]}>
       {cartCtx.items.map((item) => {
-
-
         return (
-          <li className={classes.item} key={item.id}>
-            <div>
+          <li className={classes.item} id={item.id} key={item.id}>
+            <div className={classes.itemBox}>
               <span className={classes.name}>{item.name}</span>
-              <div>
-                <span className={classes.price}>{item.price}</span>
-                <span className={classes.quantity}>{item.quantity}</span>
+              <div className={classes.itemDesc}>
+                <span className={classes.price}>${item.price}</span>
+                <span className={classes.quantity}>x{item.quantity}</span>
               </div>
             </div>
-            <div className={classes.itemaction}>
-              <button>-</button>
-              <button>+</button>
+            <div className={classes["item-action"]}>
+              <button onClick={reduceHandler}>-</button>
+              <button onClick={increaseHandler}>+</button>
             </div>
           </li>
         );
@@ -41,7 +53,7 @@ const Cart = (props) => {
       {cartItems}
       <div className={classes.total}>
         <span>Total Amount</span>
-        <span>35.62</span>
+        <span>{cartCtx.totalAmount}</span>
       </div>
       <div className={classes.actions}>
         <button onClick={props.onHideCart} className={classes["button--alt"]}>
