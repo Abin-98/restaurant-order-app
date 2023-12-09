@@ -18,15 +18,15 @@ const Cart = (props) => {
   const increaseHandler = (e) => {
     const ID = e.target.parentElement.parentElement.id;
     const index = cartCtx.items.findIndex((element) => element.id === ID);
-    const targetItem = {...cartCtx.items[index]}
-    targetItem.quantity=1;
+    const targetItem = { ...cartCtx.items[index] };
+    targetItem.quantity = 1;
     cartCtx.addItem(targetItem);
   };
 
   const cartItems = (
     <ul className={classes["cart-items"]}>
       {cartCtx.items.map((item) => {
-        return (
+        return item.quantity > 0 ? (
           <li className={classes.item} id={item.id} key={item.id}>
             <div className={classes.itemBox}>
               <span className={classes.name}>{item.name}</span>
@@ -40,7 +40,7 @@ const Cart = (props) => {
               <button onClick={increaseHandler}>+</button>
             </div>
           </li>
-        );
+        ) : ( "" );
       })}
     </ul>
   );
@@ -53,7 +53,7 @@ const Cart = (props) => {
       {cartItems}
       <div className={classes.total}>
         <span>Total Amount</span>
-        <span>{cartCtx.totalAmount}</span>
+        <span>${cartCtx.totalAmount}</span>
       </div>
       <div className={classes.actions}>
         <button onClick={props.onHideCart} className={classes["button--alt"]}>

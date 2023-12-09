@@ -16,7 +16,7 @@ const CartProvider = (props) => {
     }
     const removeItemFromCartHandler=(ID)=>{
         const dupItem=items.map(item=>{
-          if(item.id===ID){
+          if(item.id===ID && item.quantity>0){
             item.quantity-=1;
           }
           return item;
